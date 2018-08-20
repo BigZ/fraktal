@@ -34,6 +34,14 @@ class ArtistController
     {
         $resource = $this->fraktal->transform($artist, $request);
 
-        return new Response($this->fraktal->serialize($resource));
+        return new Response(
+            $this->fraktal->serialize(
+                $resource,
+                Fraktal::SPEC_JSONAPI,
+                Fraktal::FORMAT_JSON
+            ),
+            200,
+            ['Content-Type' => 'application/vnd.api+json']
+        );
     }
 }

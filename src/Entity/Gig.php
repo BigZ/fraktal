@@ -11,6 +11,7 @@
 
 namespace App\Entity;
 
+use App\Annotation\Exposable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -28,6 +29,7 @@ class Gig
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Exposable()
      */
     private $id;
 
@@ -37,6 +39,7 @@ class Gig
      * @Assert\NotBlank()
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @Exposable()
      */
     private $name;
 
@@ -47,6 +50,7 @@ class Gig
      * @Assert\DateTime()
      *
      * @ORM\Column(name="startDate", type="datetime")
+     * @Exposable()
      */
     private $startDate;
 
@@ -56,6 +60,7 @@ class Gig
      * @Assert\DateTime()
      *
      * @ORM\Column(name="endDate", type="datetime", nullable=true)
+     * @Exposable()
      */
     private $endDate;
 

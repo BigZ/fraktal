@@ -8,14 +8,24 @@ use Symfony\Component\HttpFoundation\Request;
 
 class EntityTransformer extends TransformerAbstract
 {
-    private $includes;
-
-    private $fields;
-
     /**
      * @var ObjectReaderInterface
      */
     private $objectReader;
+
+    /**
+     * List of resources possible to include
+     *
+     * @var array
+     */
+    protected $availableIncludes = [];
+
+    /**
+     * List of fields possible to display
+     *
+     * @var array
+     */
+    private $availableFields = [];
 
     /**
      * EntityTransformer constructor.
@@ -28,46 +38,54 @@ class EntityTransformer extends TransformerAbstract
     }
 
     /**
-     * List of resources possible to include
-     *
-     * @var array
+     * @param array $includes
      */
-    protected $availableIncludes = [];
+    public function setAvailableIncludes($includes)
+    {
+        $this->availableIncludes = $includes;
+    }
+
+    /**
+     * @param $fields
+     */
+    public function setAvailableFields($fields)
+    {
+        $this->availableFields = $fields;
+    }
 
     /**
      * @param $resource
      * @return mixed
-     * @throws \ReflectionException
      */
     public function transform($resource)
     {
-        return $this->objectReader->getExposedProperties($resource, $this->fields);
+        return $this->objectReader->getExposedProperties($resource, $this->availableFields);
     }
 
-    public function parseRequest(Request $request)
+    public function __call($name, $arguments)
     {
-        $this->includes = $this->getComaSeparatedQueryParams($request, 'include');
-        $this->fields = $this->getComaSeparatedQueryParams($request, 'fields');
+        if (0 === strpos($name, 'include') && strlen($name) > strlen('include')) {
+            return $this->includeResource(
+                $arguments[0],
+                substr($name, strlen('include'), strlen($name))
+            );
+        }
     }
 
     /**
-     * Get the embed query param.
-     *
-     * @return array
+     * @param $entity
+     * @param $name
+     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\Item
      */
-    private function getComaSeparatedQueryParams(Request $request, $name)
+    private function includeResource($entity, $name)
     {
-        $include = $request->query->get($name);
+        $resource = $this->objectReader->getPropertyValue($entity, $name);
 
-        return $include ? explode(',', $include) : [];
+        if (is_array($resource) || $resource instanceof \Traversable) {
+            // @TODO needs to find a reliable and central method to figure out entityname
+            return $this->collection($resource, $this, strtolower($name));
+        }
+
+        return $this->item($resource, $this, strtolower($name));
     }
-
-    /**
-     * Include Author
-    public function includeAuthor($resource)
-    {
-        $author = $resource->author;
-
-        return $this->item($author, $this);
-    }*/
 }

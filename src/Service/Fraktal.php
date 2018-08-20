@@ -33,6 +33,10 @@ class Fraktal
     {
         $transformer = null === $userTransformer ? $this->getDefaultTransformer($request) : $userTransformer;
 
+        // @TODO: parse includes only if option is activated, which should be the case by default
+        // also, this could be done at many other places, is here the best place to ?
+        $this->manager->parseIncludes($this->getComaSeparatedQueryParams($request, 'include'));
+
         return new Fractal\Resource\Item(
             $entity,
             $transformer,
@@ -66,8 +70,21 @@ class Fraktal
 
     private function getDefaultTransformer(Request $request)
     {
-        $this->defaultTransformer->parseRequest($request);
+        $this->defaultTransformer->setAvailableIncludes($this->getComaSeparatedQueryParams($request, 'include'));
+        $this->defaultTransformer->setAvailableFields($this->getComaSeparatedQueryParams($request, 'fields'));
 
         return $this->defaultTransformer;
+    }
+
+    /**
+     * Get the embed query param.
+     *
+     * @return array
+     */
+    private function getComaSeparatedQueryParams(Request $request, $name)
+    {
+        $include = $request->query->get($name);
+
+        return $include ? explode(',', $include) : [];
     }
 }

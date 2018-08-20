@@ -49,4 +49,6 @@ interface ObjectReaderInterface
     public function isPropertyExposable(\ReflectionProperty $property);
 
     public function getExposedProperties($resource, array $filter);
+
+    public function getPropertyValue($resource, string $name);
 }

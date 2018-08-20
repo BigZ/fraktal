@@ -122,6 +122,9 @@ class DoctrineAnnotationReader implements ObjectReaderInterface
         // @TODO we want to have different possible strategies faut exposing properties
         // to include everything or nothing by default (or maybe scalars only ?)
         // as well has having multiple filtering strategies (fields=name,date...) such as all or nothing
+        // and deep sparse fieldset (fields=label.name,gigs.date)
+
+        // current implementation takes everything if fields is unspecified or id + fields if specified
         $propertyList = [];
         $reflectionClass = new \ReflectionClass($resource);
         foreach ($reflectionClass->getProperties() as $property) {
@@ -129,7 +132,7 @@ class DoctrineAnnotationReader implements ObjectReaderInterface
 
             if (
                 $this->isPropertyExposable($property) &&
-                (count($filter) > 0 ? in_array($propertyName, $filter) : true)
+                (count($filter) > 0 ? in_array($propertyName, $filter) || $propertyName === 'id' : true)
             ) {
                 $propertyList[$propertyName] = $resource->{$this->getProperyGetter($property)}();
             }
@@ -138,6 +141,24 @@ class DoctrineAnnotationReader implements ObjectReaderInterface
         return $propertyList;
     }
 
+    public function getPropertyValue($resource, string $name)
+    {
+        $reflectionClass = new \ReflectionClass($resource);
+        $property = $reflectionClass->getProperty($name);
+        $getter = $this->getProperyGetter($property);
+
+        if ($getter) {
+            return $resource->{$getter}();
+        }
+
+        return null;
+    }
+
+    /**
+     * if annotation has a getter property, use that, otherwise use get_*Property*
+     * @param \ReflectionProperty $property
+     * @return string
+     */
     private function getProperyGetter(\ReflectionProperty $property)
     {
         $exposable = $this->annotationReader->getPropertyAnnotation($property, Exposable::class);

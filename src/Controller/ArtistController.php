@@ -20,10 +20,21 @@ class ArtistController
     /**
      * @Route("/artists")
      */
-    public function getArtists()
+    public function getArtists(Request $request)
     {
+        $artists = $this->fraktal->getPaginatedCollection(Artist::class, $request);
+        $paginatorAdapter = $this->fraktal->getPaginationAdapter($request);
+        $resource = $this->fraktal->transform($artists, $request);
+        $resource->setPaginator($paginatorAdapter);
+
         return new Response(
-            'coucou'
+            $this->fraktal->serialize(
+                $resource,
+                Fraktal::SPEC_JSONAPI,
+                Fraktal::FORMAT_JSON
+            ),
+            200,
+            ['Content-Type' => 'application/vnd.api+json']
         );
     }
 

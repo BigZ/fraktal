@@ -6,6 +6,8 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "league/fractal": "^0.17.0",
+        "pagerfanta/pagerfanta": "^2.0",
+        "psr/http-message": "^1.0",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/console": "^4.1",
         "symfony/flex": "^1.0",

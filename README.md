@@ -46,8 +46,8 @@ class ArtistController
 
 ### Todo
 - includes
-- filters
 - pagination
+- filters
 - headers map according to spec+serialisation schema
 - eager fetch helper interface + orm
 - paramconverter for injecting transformed Collection or Item

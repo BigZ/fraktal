@@ -134,7 +134,7 @@ class DoctrineAnnotationReader implements ObjectReaderInterface
                 $this->isPropertyExposable($property) &&
                 (count($filter) > 0 ? in_array($propertyName, $filter) || $propertyName === 'id' : true)
             ) {
-                $propertyList[$propertyName] = $resource->{$this->getProperyGetter($property)}();
+                $propertyList[$propertyName] = $resource->{$this->getPropertyGetter($property)}();
             }
         }
 
@@ -144,8 +144,8 @@ class DoctrineAnnotationReader implements ObjectReaderInterface
     public function getPropertyValue($resource, string $name)
     {
         $reflectionClass = new \ReflectionClass($resource);
-        $property = $reflectionClass->getProperty($name);
-        $getter = $this->getProperyGetter($property);
+        $property = $reflectionClass->getProperty(strtolower($name));
+        $getter = $this->getPropertyGetter($property);
 
         if ($getter) {
             return $resource->{$getter}();
@@ -159,11 +159,11 @@ class DoctrineAnnotationReader implements ObjectReaderInterface
      * @param \ReflectionProperty $property
      * @return string
      */
-    private function getProperyGetter(\ReflectionProperty $property)
+    private function getPropertyGetter(\ReflectionProperty $property)
     {
         $exposable = $this->annotationReader->getPropertyAnnotation($property, Exposable::class);
 
-        if (null !== $exposable->getGetter()) {
+        if (null !== $exposable && null !== $exposable->getGetter()) {
             return $exposable->getGetter();
         }
 

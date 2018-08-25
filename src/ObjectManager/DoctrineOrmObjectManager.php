@@ -55,8 +55,8 @@ class DoctrineOrmObjectManager implements ObjectManagerInterface
             $this->findAllSorted(
                 $className,
                 $this->parseSorting($request->query->get('sort', '')),
-                [],
-                []
+                $request->query->get('filter', []),
+                $request->query->get('filteroperator', [])
             )
         );
         $this->paginator = new Pagerfanta($doctrineAdapter);

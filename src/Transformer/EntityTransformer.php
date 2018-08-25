@@ -2,6 +2,7 @@
 
 namespace App\Transformer;
 
+use App\Exception\IncludeNotFoundException;
 use App\ObjectReader\ObjectReaderInterface;
 use League\Fractal\TransformerAbstract;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,10 +66,14 @@ class EntityTransformer extends TransformerAbstract
     public function __call($name, $arguments)
     {
         if (0 === strpos($name, 'include') && strlen($name) > strlen('include')) {
-            return $this->includeResource(
-                $arguments[0],
-                substr($name, strlen('include'), strlen($name))
-            );
+            try {
+                return $this->includeResource(
+                    $arguments[0],
+                    substr($name, strlen('include'), strlen($name))
+                );
+            } catch (\Exception $exception) {
+               throw new IncludeNotFoundException();
+            }
         }
     }
 

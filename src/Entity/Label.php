@@ -11,6 +11,7 @@
 
 namespace App\Entity;
 
+use App\Annotation\Exposable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -28,6 +29,7 @@ class Label
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Exposable()
      */
     private $id;
 
@@ -37,6 +39,7 @@ class Label
      * @Assert\NotBlank()
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @Exposable()
      */
     private $name;
 
@@ -46,6 +49,7 @@ class Label
      * @Assert\NotBlank()
      *
      * @ORM\Column(name="slug", type="string", length=255, unique=true)
+     * @Exposable()
      */
     private $slug;
 
@@ -53,6 +57,7 @@ class Label
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255)
+     * @Exposable()
      */
     private $description;
 
@@ -60,6 +65,7 @@ class Label
      * @var array
      *
      * @ORM\ManyToMany(targetEntity="Artist", mappedBy="labels")
+     * @Exposable()
      */
     private $artists;
 

@@ -46,10 +46,10 @@ class ArtistController
 
 ### Todo
 - includes
-- pagination
 - filters
 - headers map according to spec+serialisation schema
 - eager fetch helper interface + orm
+- global error catcher that display a json error
 - paramconverter for injecting transformed Collection or Item
 - response listener for serialization
 - config

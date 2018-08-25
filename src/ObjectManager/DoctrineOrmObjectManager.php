@@ -3,6 +3,7 @@
 namespace App\ObjectManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\QueryBuilder;
 use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -29,14 +30,14 @@ class DoctrineOrmObjectManager implements ObjectManagerInterface
     private $paginator;
 
     /**
-     * @var Router
+     * @var RouterInterface
      */
     private $router;
 
     /**
      * DoctrineOrmObjectManager constructor.
      * @param ObjectManager $objectManager
-     * @param Router $router
+     * @param RouterInterface $router
      */
     public function __construct(ObjectManager $objectManager, RouterInterface $router)
     {
@@ -45,17 +46,28 @@ class DoctrineOrmObjectManager implements ObjectManagerInterface
         $this->paninator = null;
     }
 
-
-    public function getPaginatedCollection($className, array $sorting = [], array $filterValues = [], array $filerOperators = [])
+    /**
+     * @param $className
+     * @param $request
+     *
+     * @return array|mixed|\Traversable
+     */
+    public function getPaginatedCollection($className, $request)
     {
         $doctrineAdapter = new DoctrineORMAdapter(
-            $this->findAllSorted($className, $sorting, $filterValues, $filerOperators)
+            $this->findAllSorted($className, [], [], [])
         );
         $this->paginator = new Pagerfanta($doctrineAdapter);
+        $this->paginator->setMaxPerPage($request->query->get('limit', 10));
+        $this->paginator->setCurrentPage($request->query->get('page', 1));
 
         return $this->paginator->getCurrentPageResults();
     }
 
+    /**
+     * @param $request
+     * @return PagerfantaPaginatorAdapter|mixed
+     */
     public function getPaginationAdapter($request)
     {
         $router = $this->router;
@@ -66,7 +78,7 @@ class DoctrineOrmObjectManager implements ObjectManagerInterface
                 $inputParams = $request->attributes->get('_route_params');
                 $newParams = array_merge($inputParams, $request->query->all());
                 $newParams['page'] = $page;
-                return $router->generate($route, $newParams, 0);
+                return $router->generate($route, $newParams);
             });
     }
 

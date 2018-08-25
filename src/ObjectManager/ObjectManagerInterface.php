@@ -11,14 +11,16 @@ use Psr\Http\Message\ServerRequestInterface;
 interface ObjectManagerInterface
 {
     /**
-     * @param string $className
-     * @param array  $sorting
-     * @param array  $filterValues
-     * @param array  $filerOperators
+     * @param $className
+     * @param $request
      *
-     * @return array
+     * @return mixed
      */
-    public function getPaginatedCollection($className, array $sorting, array $filterValues, array $filerOperators);
+    public function getPaginatedCollection($className, $request);
 
+    /**
+     * @param $request
+     * @return mixed
+     */
     public function getPaginationAdapter($request);
 }

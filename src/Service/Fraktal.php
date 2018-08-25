@@ -97,9 +97,7 @@ class Fraktal
     {
         return $this->objectManager->getPaginatedCollection(
             $className,
-            $request->query->get('sort', []),
-            $request->query->get('filter', []),
-            $request->query->get('filteroperator', [])
+            $request
         );
     }
 

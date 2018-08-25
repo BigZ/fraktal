@@ -45,7 +45,6 @@ class ArtistController
 ```
 
 ### Todo
-- includes
 - filters
 - headers map according to spec+serialisation schema
 - eager fetch helper interface + orm

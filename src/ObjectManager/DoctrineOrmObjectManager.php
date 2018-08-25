@@ -7,9 +7,6 @@ use Doctrine\ORM\QueryBuilder;
 use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -55,7 +52,12 @@ class DoctrineOrmObjectManager implements ObjectManagerInterface
     public function getPaginatedCollection($className, $request)
     {
         $doctrineAdapter = new DoctrineORMAdapter(
-            $this->findAllSorted($className, [], [], [])
+            $this->findAllSorted(
+                $className,
+                $this->parseSorting($request->query->get('sort', '')),
+                [],
+                []
+            )
         );
         $this->paginator = new Pagerfanta($doctrineAdapter);
         $this->paginator->setMaxPerPage($request->query->get('limit', 10));
@@ -123,5 +125,29 @@ class DoctrineOrmObjectManager implements ObjectManagerInterface
 
             return $queryBuilder;
         }
+    }
+
+    /**
+     * Parse a jsonapi formatted sorting string to an array.
+     * @param string $sort
+     * @return array
+     */
+    private function parseSorting($sort)
+    {
+        $parsed = [];
+
+        if ($sort) {
+            $nameList = explode(',', $sort);
+            foreach ($nameList as $name) {
+                if ('-' === $name[0]) {
+                    $parsed[substr($name, 1, strlen($name))] = 'desc';
+                    continue;
+                }
+
+                $parsed[$name] = 'asc';
+            }
+        }
+
+        return $parsed;
     }
 }

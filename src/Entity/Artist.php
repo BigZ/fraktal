@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Annotation\Exposable;
+use WizardsRest\Annotation\Exposable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 

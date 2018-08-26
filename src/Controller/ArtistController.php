@@ -3,56 +3,39 @@
 namespace App\Controller;
 
 use App\Entity\Artist;
-use App\Service\Fraktal;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use WizardsRest\WizardsRest;
 
 class ArtistController
 {
-    private $fraktal;
+    /**
+     * @var WizardsRest
+     */
+    private $rest;
 
-    public function __construct(Fraktal $fraktal)
+    /**
+     * ArtistController constructor.
+     * @param WizardsRest $rest
+     */
+    public function __construct(WizardsRest $rest)
     {
-        $this->fraktal = $fraktal;
+        $this->rest = $rest;
     }
 
     /**
      * @Route("/artists")
      */
-    public function getArtists(Request $request)
+    public function getArtists(ServerRequestInterface $request): \Traversable
     {
-        $artists = $this->fraktal->getPaginatedCollection(Artist::class, $request);
-        $paginatorAdapter = $this->fraktal->getPaginationAdapter($request);
-        $resource = $this->fraktal->transform($artists, $request);
-        $resource->setPaginator($paginatorAdapter);
-
-        return new Response(
-            $this->fraktal->serialize(
-                $resource,
-                Fraktal::SPEC_JSONAPI,
-                Fraktal::FORMAT_JSON
-            ),
-            200,
-            ['Content-Type' => 'application/vnd.api+json']
-        );
+        return $this->rest->getPaginatedCollection(Artist::class, $request);
     }
 
     /**
      * @Route("/artists/{id}")
      */
-    public function getArtist(Artist $artist, Request $request)
+    public function getArtist(Artist $artist): Artist
     {
-        $resource = $this->fraktal->transform($artist, $request);
-
-        return new Response(
-            $this->fraktal->serialize(
-                $resource,
-                Fraktal::SPEC_JSONAPI,
-                Fraktal::FORMAT_JSON
-            ),
-            200,
-            ['Content-Type' => 'application/vnd.api+json']
-        );
+        return $artist;
     }
 }

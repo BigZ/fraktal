@@ -45,10 +45,22 @@ services:
         class: WizardsRest\ObjectManager\DoctrineOrmObjectManager
         arguments:
             - '@doctrine.orm.entity_manager'
+
+    wizards_rest.paginator:
+        class: WizardsRest\Paginator\DoctrineOrmPagerFantaPaginator
+        arguments:
             - '@router'
 
-    WizardsRest\WizardsRest:
-        class: WizardsRest\WizardsRest
+    WizardsRest\Serializer:
+        arguments:
+            - 'http://test.com'
+
+    WizardsRest\CollectionManager:
+        arguments:
+            - '@wizards_rest.object_manager'
+            - '@wizards_rest.paginator'
+
+    WizardsRest\Provider:
         arguments:
             - '@wizards_rest.entity_transformer'
-            - '@wizards_rest.object_manager'
+

@@ -10,14 +10,24 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use WizardsRest\CollectionManager;
+use WizardsRest\Provider;
+use WizardsRest\Serializer;
 use WizardsRest\WizardsRest;
 
 class SerializationSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var WizardsRest
+     * @var Provider
      */
-    private $rest;
+    private $provider;
+
+    /**
+     * @var Serializer
+     */
+    private $serializer;
+
+    private $collectionManager;
 
     /**
      * @var DiactorosFactory
@@ -26,27 +36,29 @@ class SerializationSubscriber implements EventSubscriberInterface
 
     /**
      * SerializationSubscriber constructor.
-     *
-     * @param WizardsRest $rest
+     * @param Serializer $serializer
+     * @param Provider $provider
      */
-    public function __construct(WizardsRest $rest)
+    public function __construct(Serializer $serializer, Provider $provider, CollectionManager $collectionManager)
     {
-        $this->rest = $rest;
+        $this->provider = $provider;
+        $this->serializer = $serializer;
+        $this->collectionManager = $collectionManager;
         $this->psrFactory = new DiactorosFactory();
     }
 
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
         $request = $this->psrFactory->createRequest($event->getRequest());
-        $resource =  $this->rest->transform($event->getControllerResult(), $request);
+        $resource =  $this->provider->transform($event->getControllerResult(), $request);
 
         // Add pagination if resource is a collecion
         if ($resource instanceof Collection) {
-            $resource->setPaginator($this->rest->getPaginationAdapter($request));
+            $resource->setPaginator($this->collectionManager->getPaginationAdapter($request));
         }
 
         $response = new Response(
-            $this->rest->serialize($resource, WizardsRest::SPEC_JSONAPI, WizardsRest::FORMAT_JSON),
+            $this->serializer->serialize($resource, Serializer::SPEC_JSONAPI, Serializer::FORMAT_JSON),
             200,
             ['Content-Type' => 'application/vnd.api+json']
         );

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Artist;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use WizardsRest\CollectionManager;
 use WizardsRest\WizardsRest;
 
 class ArtistController
@@ -18,7 +19,7 @@ class ArtistController
      * ArtistController constructor.
      * @param WizardsRest $rest
      */
-    public function __construct(WizardsRest $rest)
+    public function __construct(CollectionManager $rest)
     {
         $this->rest = $rest;
     }

@@ -3585,7 +3585,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:wizardstechnologies/php-rest-api.git",
-                "reference": "ca134b880dbceee5105faebd3e103e497ca7f2ef"
+                "reference": "ac1353e0284c8cf33e3af6dd222905da45a454b3"
             },
             "require": {
                 "league/fractal": "^0.17.0",
@@ -3596,6 +3596,16 @@
             "require-dev": {
                 "doctrine/common": "^2.9",
                 "doctrine/orm": "^2.6",
+                "illuminate/contracts": "^5.6",
+                "pagerfanta/pagerfanta": "^2.0",
+                "phpmd/phpmd": "^2.6",
+                "phpstan/phpstan": "^0.10.3",
+                "phpunit/phpunit": "^7.3",
+                "symfony/routing": "^4.1"
+            },
+            "suggest": {
+                "doctrine/common": "^2.9",
+                "doctrine/orm": "^2.6",
                 "pagerfanta/pagerfanta": "^2.0",
                 "symfony/routing": "^4.1"
             },
@@ -3603,6 +3613,11 @@
             "autoload": {
                 "psr-0": {
                     "WizardsRest": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-0": {
+                    "WizardsTest": "tests/"
                 }
             },
             "license": [
@@ -3615,7 +3630,7 @@
                 }
             ],
             "description": "A set of services to help you create beautiful REST APIs",
-            "time": "2018-08-26T15:13:12+00:00"
+            "time": "2018-08-27T01:21:05+00:00"
         },
         {
             "name": "zendframework/zend-code",

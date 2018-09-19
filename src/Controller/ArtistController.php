@@ -6,18 +6,17 @@ use App\Entity\Artist;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use WizardsRest\CollectionManager;
-use WizardsRest\WizardsRest;
 
 class ArtistController
 {
     /**
-     * @var WizardsRest
+     * @var CollectionManager
      */
     private $rest;
 
     /**
      * ArtistController constructor.
-     * @param WizardsRest $rest
+     * @param CollectionManager $rest
      */
     public function __construct(CollectionManager $rest)
     {

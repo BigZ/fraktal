@@ -4,6 +4,10 @@
     "repositories": [
         {
             "type": "git",
+            "url": "git@github.com:wizardstechnologies/rest-api-bundle.git"
+        },
+        {
+            "type": "git",
             "url": "git@github.com:wizardstechnologies/php-rest-api.git"
         }
     ],
@@ -21,11 +25,9 @@
         "symfony/framework-bundle": "^4.1",
         "symfony/lts": "^4@dev",
         "symfony/orm-pack": "^1.0",
-        "symfony/psr-http-message-bridge": "^1.0",
         "symfony/validator": "^4.1",
         "symfony/yaml": "^4.1",
-        "wizards/rest-api": "dev-master",
-        "zendframework/zend-diactoros": "^1.8"
+        "wizards/rest-bundle": "dev-master"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.0",
